@@ -1,4 +1,5 @@
-# EDITION — Multi-brand editorial publishing platformEDITION is a work-in-progress portfolio prototype of a shared digital publishing platform for two fictional editorial brands:
+# EDITION — Multi-brand editorial publishing platform
+EDITION is a work-in-progress portfolio prototype of a shared digital publishing platform for two fictional editorial brands:
 - THE EDIT (/edit) — fashion, beauty, culture and lifestyle.
 - FORM (/form) — architecture, interiors, art and design.
 The project explores how multiple publications can share one application, editorial workspace, content model and design system while retaining distinct brand identities. It combines reader-facing editorial experiences with a role-aware CMS and an optional AI editorial-assistant service.
