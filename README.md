@@ -150,8 +150,6 @@ The following results are recorded in [`docs/QA_STATUS.md`](./docs/QA_STATUS.md)
 - Storybook production build completed with warnings.
 The following have not been verified as complete: Docker Compose smoke test, Lighthouse measurements, WCAG/accessibility audit, responsive visual review, production infrastructure validation and an AWS deployment. No Lighthouse score, Core Web Vitals result, WCAG conformance level or live production URL is claimed.
 
-A previous GitHub Actions run showed failures in the web-quality build and Terraform validation, with dependent jobs skipped. The web workflow has been updated to install development dependencies explicitly. The Terraform validation job has been removed because this repository snapshot does not contain the referenced Terraform configuration. Push these workflow changes and review a new GitHub Actions run before treating CI as passing.
-
 See [`docs/QA_STATUS.md`](./docs/QA_STATUS.md) for evidence, reproduction notes and limitations. See [`docs/REVIEW_GUIDE.md`](./docs/REVIEW_GUIDE.md) for the expected review process and [the pull request template](./.github/PULL_REQUEST_TEMPLATE.md) for proposed changes.
 Development roadmap
 EDITION is an evolving prototype. The next milestones are intended to move it closer to a production-oriented editorial platform. These are planned improvements, not features or validations claimed as complete.
