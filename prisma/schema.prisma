@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ArticleStatus {
+  DRAFT
+  REVIEW
+  SCHEDULED
+  PUBLISHED
+}
+enum UserRole {
+  AUTHOR
+  EDITOR
+  ADMIN
+}
+
+model Publication {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  createdAt DateTime  @default(now())
+  articles  Article[]
+}
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  role         UserRole @default(AUTHOR)
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+model Author {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  role      String
+  bio       String    @default("")
+  avatar    String    @default("")
+  articles  Article[]
+}
+model Article {
+  id            String           @id @default(cuid())
+  slug          String
+  title         String
+  dek           String
+  category      String
+  tags          String[]         @default([])
+  galleryImages Json             @default("[]")
+  heroImage     String
+  heroAlt       String
+  imageCredit   String
+  readMinutes   Int              @default(1)
+  featured      Boolean          @default(false)
+  status        ArticleStatus    @default(DRAFT)
+  body          String           @db.Text
+  scheduledAt   DateTime?
+  publishedAt   DateTime?
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  publicationId String
+  authorId      String
+  publication   Publication     @relation(fields: [publicationId], references: [id], onDelete: Cascade)
+  author        Author           @relation(fields: [authorId], references: [id])
+  versions      ArticleVersion[]
+  @@unique([publicationId, slug])
+  @@index([status, publishedAt])
+  @@index([publicationId, category])
+}
+model ArticleVersion {
+  id        String   @id @default(cuid())
+  articleId String
+  title     String
+  dek       String
+  body      String   @db.Text
+  savedBy   String
+  createdAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  @@index([articleId, createdAt])
+}
+model MediaAsset {
+  id          String   @id @default(cuid())
+  url         String
+  alt         String
+  credit      String
+  name        String   @default("Editorial image")
+  mime        String   @default("image/*")
+  bytes       Int      @default(0)
+  uploadedBy  String   @default("Editorial desk")
+  width       Int?
+  height      Int?
+  createdAt   DateTime @default(now())
+}

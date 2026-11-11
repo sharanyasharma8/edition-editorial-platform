@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="loading-state" aria-live="polite"><span className="eyebrow">EDITION / LOADING</span><div className="loading-line"/><p>Gathering the next story.</p></main>; }

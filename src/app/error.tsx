@@ -1,0 +1,2 @@
+"use client";
+export default function Error({ reset }: { error: Error & { digest?: string }; reset: () => void }) { return <main className="error-state"><span className="eyebrow">AN UNEXPECTED PAUSE</span><h1>We lost the thread<span>.</span></h1><p>The page could not be loaded. Your place in the journal is still here.</p><button className="button-dark" onClick={() => reset()}>TRY AGAIN</button></main>; }

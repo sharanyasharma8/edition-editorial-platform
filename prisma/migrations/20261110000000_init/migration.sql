@@ -1,0 +1,18 @@
+CREATE TYPE "ArticleStatus" AS ENUM ('DRAFT', 'REVIEW', 'SCHEDULED', 'PUBLISHED');
+CREATE TYPE "UserRole" AS ENUM ('AUTHOR', 'EDITOR', 'ADMIN');
+CREATE TABLE "Publication" ("id" TEXT NOT NULL, "slug" TEXT NOT NULL, "name" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "Publication_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "User" ("id" TEXT NOT NULL, "email" TEXT NOT NULL, "name" TEXT NOT NULL, "role" "UserRole" NOT NULL DEFAULT 'AUTHOR', "passwordHash" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "User_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Author" ("id" TEXT NOT NULL, "slug" TEXT NOT NULL, "name" TEXT NOT NULL, "role" TEXT NOT NULL, "bio" TEXT NOT NULL DEFAULT '', "avatar" TEXT NOT NULL DEFAULT '', CONSTRAINT "Author_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "Article" ("id" TEXT NOT NULL, "slug" TEXT NOT NULL, "title" TEXT NOT NULL, "dek" TEXT NOT NULL, "category" TEXT NOT NULL, "tags" TEXT[] NOT NULL DEFAULT ARRAY[]::TEXT[], "galleryImages" JSONB NOT NULL DEFAULT '[]', "heroImage" TEXT NOT NULL, "heroAlt" TEXT NOT NULL, "imageCredit" TEXT NOT NULL, "readMinutes" INTEGER NOT NULL DEFAULT 1, "featured" BOOLEAN NOT NULL DEFAULT false, "status" "ArticleStatus" NOT NULL DEFAULT 'DRAFT', "body" TEXT NOT NULL, "scheduledAt" TIMESTAMP(3), "publishedAt" TIMESTAMP(3), "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" TIMESTAMP(3) NOT NULL, "publicationId" TEXT NOT NULL, "authorId" TEXT NOT NULL, CONSTRAINT "Article_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "ArticleVersion" ("id" TEXT NOT NULL, "articleId" TEXT NOT NULL, "title" TEXT NOT NULL, "dek" TEXT NOT NULL, "body" TEXT NOT NULL, "savedBy" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "ArticleVersion_pkey" PRIMARY KEY ("id"));
+CREATE TABLE "MediaAsset" ("id" TEXT NOT NULL, "url" TEXT NOT NULL, "alt" TEXT NOT NULL, "credit" TEXT NOT NULL, "width" INTEGER, "height" INTEGER, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "MediaAsset_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "Publication_slug_key" ON "Publication"("slug");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "Author_slug_key" ON "Author"("slug");
+CREATE UNIQUE INDEX "Article_publicationId_slug_key" ON "Article"("publicationId", "slug");
+CREATE INDEX "Article_status_publishedAt_idx" ON "Article"("status", "publishedAt");
+CREATE INDEX "Article_publicationId_category_idx" ON "Article"("publicationId", "category");
+CREATE INDEX "ArticleVersion_articleId_createdAt_idx" ON "ArticleVersion"("articleId", "createdAt");
+ALTER TABLE "Article" ADD CONSTRAINT "Article_publicationId_fkey" FOREIGN KEY ("publicationId") REFERENCES "Publication"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Article" ADD CONSTRAINT "Article_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "Author"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ArticleVersion" ADD CONSTRAINT "ArticleVersion_articleId_fkey" FOREIGN KEY ("articleId") REFERENCES "Article"("id") ON DELETE CASCADE ON UPDATE CASCADE;

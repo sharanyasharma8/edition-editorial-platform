@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+coverage
+playwright-report
+test-results
+.env*
+public/uploads
+src/data/local-content.json
+src/data/local-versions.json
+src/data/media-manifest.json
+.pytest_cache
+__pycache__
+*.py[cod]
+.venv

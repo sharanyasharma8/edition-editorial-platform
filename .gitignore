@@ -1,0 +1,26 @@
+node_modules/
+.next/
+out/
+coverage/
+playwright-report/
+test-results/
+.env
+.env.local
+.env.*.local
+!.env.example
+.DS_Store
+*.log
+src/data/local-content.json
+public/uploads/*
+!public/uploads/.gitkeep
+storybook-static/
+src/data/media-manifest.json
+
+# TypeScript incremental compiler cache
+*.tsbuildinfo
+
+.pytest_cache/
+
+__pycache__/
+
+*.py[cod]

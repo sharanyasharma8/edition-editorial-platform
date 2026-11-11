@@ -1,0 +1,83 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: edition
+      POSTGRES_PASSWORD: edition_local_pw
+      POSTGRES_DB: edition
+    ports: ["5432:5432"]
+    volumes: ["edition-postgres:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edition -d edition"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: ["edition-redis:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  ai:
+    build:
+      context: .
+      dockerfile: services/ai/Dockerfile
+    environment:
+      AI_PROVIDER: ${AI_PROVIDER:-demo}
+      AI_EXTERNAL_PROCESSING_ENABLED: ${AI_EXTERNAL_PROCESSING_ENABLED:-false}
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-local-internal-edition-service-token-change-me}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      OPENAI_EMBEDDING_MODEL: ${OPENAI_EMBEDDING_MODEL:-text-embedding-3-small}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/v1/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      ai:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
+      SESSION_SECRET: ${SESSION_SECRET:-local-compose-secret-change-before-launch-123}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      CRON_SECRET: ${CRON_SECRET:-local-cron-secret-change-before-launch}
+      DEMO_EDITOR_EMAIL: ${DEMO_EDITOR_EMAIL:-editor@edition.studio}
+      DEMO_EDITOR_PASSWORD: ${DEMO_EDITOR_PASSWORD:-edition-demo-pass}
+      DEMO_AUTHOR_EMAIL: ${DEMO_AUTHOR_EMAIL:-author@edition.studio}
+      DEMO_AUTHOR_PASSWORD: ${DEMO_AUTHOR_PASSWORD:-author-demo-pass}
+      EDITION_USE_DB: "true"
+      DATABASE_URL: postgresql://edition:edition_local_pw@db:5432/edition?schema=public
+      REDIS_URL: redis://redis:6379
+      AI_SERVICE_URL: http://ai:8001
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-local-internal-edition-service-token-change-me}
+      AI_PROVIDER: ${AI_PROVIDER:-demo}
+      AI_EXTERNAL_PROCESSING_ENABLED: ${AI_EXTERNAL_PROCESSING_ENABLED:-false}
+    ports: ["3000:3000"]
+    volumes: ["edition-uploads:/app/public/uploads"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:3000/api/health >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
+    command: ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && ./node_modules/.bin/tsx prisma/seed.ts && node server.js"]
+volumes:
+  edition-postgres:
+  edition-redis:
+  edition-uploads:

@@ -1,0 +1,200 @@
+[
+  {
+    "id": "art-001",
+    "slug": "the-art-of-getting-dressed-slowly",
+    "brand": "edit",
+    "title": "The art of getting dressed, slowly",
+    "dek": "In a season defined by speed, a new generation of designers is making a case for clothes that ask to be lived in — and kept.",
+    "category": "Fashion",
+    "tags": [
+      "Style",
+      "Craft",
+      "Perspective"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=2200&q=85",
+    "heroAlt": "A fashion portrait in a sculptural neutral look against an architectural backdrop",
+    "imageCredit": "Photography via Unsplash",
+    "galleryImages": [
+      {
+        "src": "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=1600&q=82",
+        "alt": "A second editorial fashion look with sculptural tailoring",
+        "credit": "Photography via Unsplash"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1600&q=82",
+        "alt": "A considered edit of clothing and accessories",
+        "credit": "Photography via Unsplash"
+      }
+    ],
+    "author": {
+      "name": "Mara Ellison",
+      "slug": "mara-ellison",
+      "role": "Fashion Director",
+      "bio": "Mara writes about the ideas behind what we wear, with a particular interest in craft, independent designers and the changing language of personal style.",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=320&q=80"
+    },
+    "publishedAt": "2026-11-08T09:30:00.000Z",
+    "updatedAt": "2026-11-08T09:30:00.000Z",
+    "readMinutes": 7,
+    "featured": true,
+    "status": "PUBLISHED",
+    "body": "There is a particular pleasure in a garment that does not insist on being noticed. It reveals itself slowly: in the line of a shoulder, the weight of a sleeve, the way a fabric softens after years of movement. This is not fashion as interruption. It is fashion as a quiet, ongoing conversation.\n\n> Fashion as a quiet, ongoing conversation.\n\n## A different measure of newness\n\nAcross studios from Copenhagen to Mumbai, designers are returning to the fundamentals. They are asking what makes a piece worth keeping, how it changes with a wearer, and whether the most radical gesture might be to make fewer things, more thoughtfully.\n\nThe result is not a uniform. It is a way of looking. A coat with a considered proportion can feel as expressive as the loudest print; a well-made shirt can hold the memory of a decade. Clothes become a record of attention rather than a response to the calendar.\n\nFor the people making them, time is part of the material. Pattern cutters revisit old blocks. Knitters work with fibres that carry their own irregularities. Small workshops make room for the human hand, not as a nostalgic flourish but as a form of knowledge that cannot be automated.\n\nPerhaps the most interesting thing about dressing slowly is that it changes the question. Instead of asking what is new, we begin to ask what is still becoming."
+  },
+  {
+    "id": "art-002",
+    "slug": "a-new-language-of-light",
+    "brand": "form",
+    "title": "A new language of light",
+    "dek": "Inside a coastal home where shadow, texture and restraint do the work of decoration.",
+    "category": "Interiors",
+    "tags": [
+      "Homes",
+      "Light",
+      "Materials"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=2200&q=85",
+    "heroAlt": "A calm contemporary interior with warm materiality and natural light",
+    "imageCredit": "Photography via Unsplash",
+    "galleryImages": [
+      {
+        "src": "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=82",
+        "alt": "A quiet interior with natural textures and considered furniture",
+        "credit": "Photography via Unsplash"
+      },
+      {
+        "src": "https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1600&q=82",
+        "alt": "A light-filled architectural interior with restrained materials",
+        "credit": "Photography via Unsplash"
+      }
+    ],
+    "author": {
+      "name": "Elliot Wren",
+      "slug": "elliot-wren",
+      "role": "Design Editor",
+      "bio": "Elliot explores the relationship between architecture, material culture and the rituals of everyday life.",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=320&q=80"
+    },
+    "publishedAt": "2026-11-06T08:00:00.000Z",
+    "updatedAt": "2026-11-06T08:00:00.000Z",
+    "readMinutes": 6,
+    "featured": true,
+    "status": "PUBLISHED",
+    "body": "At first light, the house is almost monochrome. Pale plaster catches the earliest warmth; a long wall moves from chalk to honey as the sun travels across it. Nothing announces itself. Everything is in conversation.\n\n> Nothing announces itself. Everything is in conversation.\n\n## The architecture of restraint\n\nThe architects began with a simple brief: make a place that feels open without feeling exposed. The answer was not a glass box but a sequence of thresholds — a deep reveal, a screened terrace, a courtyard that holds the day in a different register.\n\nMaterial choices were made for how they age. Stone is honed rather than polished. Timber is left with enough grain to register the hand that worked it. Even the joinery has a softness, an edge that catches light rather than reflecting it back.\n\nThe house is quiet, but it is not empty. It is full of small changes: the shadow of a tree crossing a floor, the coolness of a wall after rain, the way a room becomes larger when the furniture gives it room to breathe.\n\nIt is a reminder that good architecture does not always add. Sometimes it edits."
+  },
+  {
+    "id": "art-003",
+    "slug": "objects-with-a-second-life",
+    "brand": "form",
+    "title": "Objects with a second life",
+    "dek": "A new wave of makers is finding possibility in what the world has already made — and left behind.",
+    "category": "Objects",
+    "tags": [
+      "Circular Design",
+      "Making",
+      "Materials"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1800&q=85",
+    "heroAlt": "Sculptural home objects arranged in a warm, minimal interior",
+    "imageCredit": "Photography via Unsplash",
+    "author": {
+      "name": "Elliot Wren",
+      "slug": "elliot-wren",
+      "role": "Design Editor",
+      "bio": "Elliot explores the relationship between architecture, material culture and the rituals of everyday life.",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=320&q=80"
+    },
+    "publishedAt": "2026-11-04T10:00:00.000Z",
+    "updatedAt": "2026-11-04T10:00:00.000Z",
+    "readMinutes": 5,
+    "featured": false,
+    "status": "PUBLISHED",
+    "body": "The most interesting material in a workshop is sometimes the one nobody ordered. Offcuts, failed casts, broken tiles and obsolete components arrive with histories already attached. For a growing group of designers, those histories are not problems to disguise. They are the beginning of a brief.\n\nWorking with what exists requires a different kind of authorship. The maker must listen to the material before deciding what it should become. A discarded timber beam may dictate the dimensions of a table; a batch of imperfect glass may determine the rhythm of a light.\n\nThe objects that emerge are rarely identical. Their variations are evidence of the process, not defects in the finish. And because their material origins are visible, they invite a more intimate relationship with the things we bring into our homes.\n\nThis is not a new aesthetic so much as a new ethic: value is discovered, not simply assigned."
+  },
+  {
+    "id": "art-004",
+    "slug": "the-beauty-of-the-in-between",
+    "brand": "edit",
+    "title": "The beauty of the in-between",
+    "dek": "On the creative lives being built between disciplines, cities and inherited definitions of success.",
+    "category": "Culture",
+    "tags": [
+      "Creative Lives",
+      "Culture",
+      "Ideas"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1800&q=85",
+    "heroAlt": "Intimate editorial portrait in soft natural light",
+    "imageCredit": "Photography via Unsplash",
+    "author": {
+      "name": "Nia Kapoor",
+      "slug": "nia-kapoor",
+      "role": "Culture Editor",
+      "bio": "Nia reports on contemporary culture, creative work and the people finding new ways to make a life around ideas.",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=320&q=80"
+    },
+    "publishedAt": "2026-11-02T11:00:00.000Z",
+    "updatedAt": "2026-11-02T11:00:00.000Z",
+    "readMinutes": 8,
+    "featured": false,
+    "status": "PUBLISHED",
+    "body": "The old map of a creative career was drawn in straight lines. Choose a discipline, find a room inside it, build a name there. The people reshaping culture now seem less interested in arriving than in moving between things.\n\nA ceramicist runs a listening club. A filmmaker edits a print journal. A stylist builds a small archive of regional textiles and turns it into a public resource. Their work is not scattered; it is connected by a way of paying attention.\n\nWhat looks like a detour from the outside can feel like a method from within. The in-between is where references cross, where an idea finds a form it could not have reached alone.\n\nThese lives are not necessarily easier to organise or explain. They ask for a different measure of progress, one that values curiosity alongside output and community alongside recognition."
+  },
+  {
+    "id": "art-005",
+    "slug": "the-room-as-a-portrait",
+    "brand": "form",
+    "title": "The room as a portrait",
+    "dek": "An artist's home becomes an evolving archive of memory, found objects and unfinished ideas.",
+    "category": "Interiors",
+    "tags": [
+      "Homes",
+      "Art",
+      "Collecting"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1800&q=85",
+    "heroAlt": "A layered modern living space with considered furniture and natural finishes",
+    "imageCredit": "Photography via Unsplash",
+    "author": {
+      "name": "Iris Bell",
+      "slug": "iris-bell",
+      "role": "Contributing Editor",
+      "bio": "Iris writes about artists, collectors and the spaces where creative lives unfold.",
+      "avatar": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=320&q=80"
+    },
+    "publishedAt": "2026-10-30T07:30:00.000Z",
+    "updatedAt": "2026-10-30T07:30:00.000Z",
+    "readMinutes": 4,
+    "featured": false,
+    "status": "PUBLISHED",
+    "body": "A home can be read like a portrait, but never all at once. The first impression is a composition of light and furniture. Stay longer and the details begin to speak: a drawing pinned above a desk, a chair inherited from a friend, a shelf that has slowly become an index of unfinished thoughts.\n\nFor this artist, collecting is not about completeness. It is a way of keeping ideas close. Objects are moved, borrowed, repaired and returned to the room when their meaning changes. Nothing is precious enough to be untouchable.\n\nThe result is an interior that resists the final photograph. It is always in progress, shaped by the life taking place inside it."
+  },
+  {
+    "id": "art-006",
+    "slug": "a-closer-look-at-the-modern-uniform",
+    "brand": "edit",
+    "title": "A closer look at the modern uniform",
+    "dek": "Why personal style is finding freedom in a smaller, more intentional wardrobe.",
+    "category": "Fashion",
+    "tags": [
+      "Style",
+      "Wardrobe",
+      "Design"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1800&q=85",
+    "heroAlt": "A carefully arranged selection of contemporary clothing in neutral tones",
+    "imageCredit": "Photography via Unsplash",
+    "author": {
+      "name": "Mara Ellison",
+      "slug": "mara-ellison",
+      "role": "Fashion Director",
+      "bio": "Mara writes about the ideas behind what we wear, with a particular interest in craft, independent designers and the changing language of personal style.",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=320&q=80"
+    },
+    "publishedAt": "2026-10-27T09:00:00.000Z",
+    "updatedAt": "2026-10-27T09:00:00.000Z",
+    "readMinutes": 6,
+    "featured": false,
+    "status": "PUBLISHED",
+    "body": "A uniform is often mistaken for a limitation. In practice, it can be a way of making space. When the daily question of what to wear becomes less noisy, attention moves elsewhere — to proportion, to movement, to the small differences that make repetition personal.\n\nThe modern uniform is not a prescribed set of pieces. It is a vocabulary that changes slowly and belongs to the person wearing it. A precise trouser, a soft knit, a jacket that travels between contexts. The value is in how each piece works with the others, and how they work with time.\n\nThere is pleasure in knowing what you own. There is even more in knowing why you keep it."
+  }
+]
