@@ -1,153 +1,194 @@
-# EDITION — Multi-brand editorial publishing platform
+# EDITION — Multi-brand editorial publishing platformEDITION is a work-in-progress portfolio prototype of a shared digital publishing platform for two fictional editorial brands:
+- THE EDIT (/edit) — fashion, beauty, culture and lifestyle.
+- FORM (/form) — architecture, interiors, art and design.
+The project explores how multiple publications can share one application, editorial workspace, content model and design system while retaining distinct brand identities. It combines reader-facing editorial experiences with a role-aware CMS and an optional AI editorial-assistant service.
+Project status — 11 November 2026: The current snapshot has a functioning local prototype and has passed the locally recorded checks listed below. It is not a production deployment or a claim of production readiness. Several operational, performance, accessibility and infrastructure tasks remain on the roadmap. See [the QA status log](./docs/QA_STATUS.md) for the verification record and limitations.
 
-EDITION is a portfolio-grade prototype of a shared publishing platform for two fictional editorial brands:
+At a glance
+Area	Current implementation
+Reader experience	Two brand-configured publication sites, article pages, categories, tags, search and author pages
+Editorial workspace	Dashboard, story creation/editing, private previews, versions, contributors, taxonomy and media library
+Application	Next.js App Router, React, TypeScript and Server Components
+APIs	GraphQL Yoga for reader-facing queries; REST route handlers for studio operations
+Persistence	Prisma schema and migrations for PostgreSQL, plus a local JSON demo repository
+Supporting services	Optional Redis integration and a separate FastAPI editorial-assistant service
+Component development	Storybook
+Quality tooling	Vitest, React Testing Library, Playwright, ESLint and Lighthouse CI configuration
+Local orchestration	Dockerfiles and Docker Compose
+CI	GitHub Actions for application, AI-service, browser, container and Storybook checks
 
-- **THE EDIT** (`/edit`) — fashion, beauty, culture and lifestyle.
-- **FORM** (`/form`) — architecture, interiors, art and design.
 
-The repository contains a Next.js App Router application, a FastAPI editorial-assistant service, a Prisma/PostgreSQL schema and seed data, reader-facing GraphQL and studio REST APIs, a Storybook setup, unit/e2e test suites, Docker orchestration, GitHub Actions and an AWS Terraform deployment path.
+Technology stack
+- Frontend: Next.js 15 App Router, React 19, TypeScript, CSS and Server Components.
+- API layer: GraphQL Yoga at /api/graphql; Next.js REST route handlers for authentication, CMS, media and AI proxy operations.
+- Data: PostgreSQL, Prisma ORM, SQL migrations and seed data; local JSON storage for the lightweight demo mode.
+- Caching and rate limiting: Optional Redis integration.
+- AI service: Python, FastAPI and Pydantic, with deterministic demo responses and optional OpenAI integration/embeddings.
+- Testing and UI development: Vitest, React Testing Library, Playwright and Storybook.
+- Build and orchestration: Docker, Docker Compose and GitHub Actions.
+Local setup
+Requirements
+- Node.js 22 LTS is the recommended version for local development and matches the CI configuration.
+- npm, included with Node.js.
+- Git, if cloning the repository.
+PostgreSQL and Redis are not required for the default file-backed demo. Docker is required only if you want to run the complete multi-service setup described below.
+Start the web application
+From the repository root, create your local environment file:
 
-> **Verification status (11 November 2026):** TypeScript typecheck, ESLint, all 16 unit tests, all 9 Playwright E2E tests, and the Next.js production build passed locally. The Storybook production build completed with bundle-size/deprecation warnings. Docker Compose integration, Lighthouse measurements, desktop/tablet/mobile visual review, accessibility audit, infrastructure validation, and deployment remain unverified. This is not a production-readiness claim. See [QA_STATUS.md](./docs/QA_STATUS.md) for evidence and limits.
-
-## Stack in this snapshot
-
-- Next.js 15 App Router, React 19, TypeScript
-- Server Components for reader-facing publication pages
-- GraphQL Yoga endpoint at `/api/graphql`
-- REST route handlers for authentication, CMS, media and AI proxy operations
-- Prisma schema and SQL migration for PostgreSQL
-- Optional Redis cache integration
-- FastAPI AI service with deterministic demo mode and optional OpenAI integration
-- Vitest, React Testing Library, Playwright and Storybook configuration
-- Dockerfiles and Docker Compose for local multi-service orchestration
-
-## Quick start: web application
-
-Requirements: Node.js 20+ and npm. PostgreSQL and Redis are optional for the file-backed local demo mode; both are required for production readiness. The configured FastAPI assistant sidecar is also required for production readiness.
-
-```bash
+macOS / Linux
 cp .env.example .env.local
+Windows PowerShell
+Copy-Item .env.example .env.local
+Install dependencies and start the development server:
 npm ci
 npm run dev
-```
+On Windows PowerShell, use npm.cmd if PowerShell blocks the npm.ps1 script:
+npm.cmd ci
+npm.cmd run dev
+Open http://localhost:3000. The root route redirects to /edit.
 
-Open `http://localhost:3001`. The root route redirects to `/edit`.
+The default .env.example selects the local JSON repository (EDITION_USE_DB=false) and deterministic AI mode (AI_PROVIDER=demo). Replace the placeholder SESSION_SECRET with a long random value before using the application beyond a local demonstration. Do not commit .env.local or other secret-bearing environment files.
+Demo CMS accounts
+The local demo login uses environment-configurable accounts. The defaults in .env.example are:
+Role	Email	Password
+Editor	editor@edition.studio	edition-demo-pass
+Author	author@edition.studio	author-demo-pass
 
-### Demo CMS accounts
 
-For the file-backed local demo, the login route uses environment-configurable demo accounts:
+These are demonstration credentials only. Change them before exposing any environment outside your own machine. In database mode, prisma/seed.ts creates the accounts with scrypt password hashes using the configured environment values. A production deployment would also need a reviewed credential bootstrap and rotation process.
+Run PostgreSQL, Redis, the AI service and the web app with Docker Compose
+The Compose configuration starts PostgreSQL, Redis, the FastAPI assistant and the Next.js web application. The web container uses PostgreSQL and Redis and runs Prisma migrations and the seed command at startup. The AI service is internal to the Compose network and is not published as a host port.
 
-| Role | Email | Password |
-|---|---|---|
-| Editor | `editor@edition.studio` | `edition-demo-pass` |
-| Author | `author@edition.studio` | `author-demo-pass` |
+Create the Compose environment file:
 
-The demo credentials are local-only. In database mode, `prisma/seed.ts` provisions the same accounts with scrypt password hashes from the environment variables; change both values before deployment and retrieve bootstrap credentials through your secret manager. The production login path authenticates the persisted `User` model and fails closed if the database is unavailable. This starter does not yet include self-service password reset, MFA or an invitation lifecycle.
-
-### Optional PostgreSQL + Redis + AI service
-
-The default `.env.example` selects the file-backed repository (`EDITION_USE_DB=false`) and deterministic AI mode (`AI_PROVIDER=demo`); external AI processing is explicitly disabled by default. To start all services with Docker Compose:
-
-```bash
+macOS / Linux
 cp .env.example .env
-# Set a strong SESSION_SECRET in .env before use.
-docker compose up --build
-```
-
-Docker Compose starts PostgreSQL, Redis, the FastAPI assistant and the Next.js web app. The web container is configured to use the database and runs migrations and the Prisma seed command at startup. Docker Compose keeps FastAPI internal to the Compose network; run `uvicorn` independently when you need to call it directly from the host. Set a long random `AI_SERVICE_TOKEN` shared by the web and AI services.
-
-For manual database setup, set `EDITION_USE_DB=true` and `DATABASE_URL`, then run:
-
-```bash
+Windows PowerShell
+Copy-Item .env.example .env
+Set strong, unique values for SESSION_SECRET and AI_SERVICE_TOKEN in .env, then run:
+docker compose up --build --wait
+Open http://localhost:3000. To stop the services:
+docker compose down
+To remove the local database, cache and upload volumes as well, use docker compose down --volumes. This permanently deletes the data stored in those local Compose volumes.
+Use PostgreSQL without Docker Compose
+For a manually managed PostgreSQL instance, configure EDITION_USE_DB=true and set DATABASE_URL in .env.local. Ensure the database is running, then execute:
 npx prisma generate
 npx prisma migrate deploy
 npm run db:seed
-```
-
-### Run the FastAPI service independently
-
-```bash
+Redis can be configured separately through REDIS_URL. It is optional for the local demo; production rate limiting requires a healthy Redis deployment and is designed to fail closed when Redis is unavailable.
+Run the FastAPI service independently
+The web application can use its deterministic demo behaviour without a separately started AI service. To run the FastAPI service as a separate process:
 cd services/ai
 python -m venv .venv
-# Activate the virtual environment, then:
+Activate the virtual environment, then install and run the service:
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8001
-```
+Health endpoint: http://localhost:8001/v1/health.
 
-Health check: `GET http://localhost:8001/v1/health`.
-
-- `AI_PROVIDER=demo` returns clearly labelled deterministic suggestions through the FastAPI service when it is configured.
-- `AI_PROVIDER=openai` requires `OPENAI_API_KEY`, `AI_EXTERNAL_PROCESSING_ENABLED=true`, and a per-request editor consent checkbox before embeddings or generation sends draft text to the provider. Keep this disabled until privacy and data-processing reviews are complete.
-- AI output requires human review; the assistant does not publish content.
-
-## Useful routes and endpoints
-
-### Reader experience
-
-- `/edit` and `/form` — publication homepages
-- `/{brand}/{articleSlug}` — long-form story
-- `/{brand}/category/{categorySlug}` — category listing
-- `/{brand}/tag/{tagSlug}` — tag listing
-- `/{brand}/search` — publication search
-- `/author/{authorSlug}` — author profile
-
-### Studio / CMS
-
-- `/studio` — editorial dashboard/login
-- `/studio/stories/new` — new story
-- `/studio/stories/{id}/edit` — edit story
-- `/studio/stories/{id}/versions` — story versions
-- `/studio/stories/{id}/preview` — authenticated private preview (noindex)
-- `/studio/contributors`, `/studio/taxonomy`, `/studio/media`, `/studio/design-system`
-
-### APIs
-
-- `GET|POST /api/graphql`
-- `/api/auth/login`, `/api/auth/logout`
-- `/api/cms/articles` and `/api/cms/articles/{id}`
-- `/api/cms/articles/{id}/publish`, `/api/cms/articles/{id}/versions`
-- `/api/cms/media`
-- `GET /api/cms/contributors`, `PATCH /api/cms/contributors/{slug}`
-- `POST /api/cms/taxonomy` (publication-scoped section rename or shared tag rename)
-- `/api/assistant` and `/api/assistant/stream`
-
-## Editorial authoring details
-
-- New stories require an explicit approved hero-image URL, meaningful alt text and image credit. Database-backed media records retain the original filename, MIME type, file size and uploader, in addition to the asset URL, alt text and credit. Use the Media Library to upload JPEG, PNG or WebP assets, then copy the URL into the story editor. Local uploads are served through `/api/media/:filename` so files created after the Next.js build remain accessible.
-- The editor supports up to 12 gallery assets. Every gallery image requires its own approved URL, alt text and credit; galleries are persisted in PostgreSQL JSON or the local demo repository and appear in both private preview and published stories.
-- Long-form copy is plain text with a small, safe editorial block format: separate paragraphs with a blank line, start a section heading with `## `, or start a pull quote with `> `. Add ` — Attribution` at the end of a quote block when an attribution is appropriate. The renderer outputs text nodes rather than arbitrary HTML.
-- Saving a currently published story as draft or review asks for confirmation because that action removes the story from the public site.
-
-## Quality commands
-
-Run these after installing dependencies and configuring the required services:
-
-```bash
+The service uses AI_PROVIDER=demo by default and returns deterministic, clearly labelled suggestions. The optional OpenAI provider requires OPENAI_API_KEY, AI_EXTERNAL_PROCESSING_ENABLED=true and explicit per-request editor consent before draft text is sent to the external provider. Keep external processing disabled until privacy, data-processing and retention requirements have been reviewed. AI suggestions require human review; the assistant does not publish stories.
+Product areas and routes
+Reader experience
+- /edit and /form — brand homepages.
+- /{brand}/{articleSlug} — long-form article.
+- /{brand}/category/{categorySlug} — category listing.
+- /{brand}/tag/{tagSlug} — tag listing.
+- /{brand}/search — publication search.
+- /author/{authorSlug} — author profile.
+Publication identity is configuration-driven in src/lib/brands.ts; the two brands share the application rather than running as separate projects.
+Studio / CMS
+- /studio — studio entry and editorial dashboard/login.
+- /studio/stories/new — create a story.
+- /studio/stories/{id}/edit — edit a story.
+- /studio/stories/{id}/versions — view story versions.
+- /studio/stories/{id}/preview — authenticated, private story preview (noindex).
+- /studio/contributors — contributor profile management.
+- /studio/taxonomy — publication sections and shared tags.
+- /studio/media — media library.
+- /studio/design-system — shared design-system reference.
+API surface
+- GET / POST /api/graphql — reader-facing GraphQL endpoint; article queries expose published content.
+- /api/auth/login and /api/auth/logout — studio authentication.
+- /api/cms/articles and /api/cms/articles/{id} — story operations.
+- /api/cms/articles/{id}/publish — publishing operation.
+- /api/cms/articles/{id}/versions — story version history.
+- /api/cms/media — media upload and listing.
+- GET /api/cms/contributors and PATCH /api/cms/contributors/{slug} — contributor operations.
+- POST /api/cms/taxonomy — publication-scoped section rename or shared-tag rename.
+- /api/assistant and /api/assistant/stream — web-to-AI-service operations.
+- /api/health and /api/health/live — readiness and liveness checks.
+Editorial workflow and content handling
+- New stories require an approved hero-image URL, meaningful alt text and image credit.
+- The media library supports JPEG, PNG and WebP uploads. Database-backed media records retain metadata such as original filename, MIME type, file size and uploader, alongside the asset URL, alt text and credit.
+- The editor supports up to 12 gallery assets. Each image requires its own URL, alt text and credit; galleries are stored with the story and appear in private previews and published articles.
+- Long-form copy uses a small text-based block format: separate paragraphs with a blank line, prefix a section heading with ## , or prefix a pull quote with > . Add  — Attribution at the end of a quote block when appropriate. The renderer outputs text nodes rather than arbitrary HTML.
+- Saving a published story as draft or review requires confirmation because the change removes it from the public publication experience.
+- When an editor changes taxonomy or contributor information, the relevant CMS route enforces the operation server-side; permissions are not based only on whether a control is visible in the UI.
+Quality checks
+Install dependencies first. From the repository root, run:
 npm run typecheck
 npm run lint
 npm test
-npm run test:e2e
 npm run build
-npm run storybook
 npm run build-storybook
-```
-
-Python AI-service checks:
-
-```bash
-cd services/ai
-pytest
+For browser tests, install the Playwright browser and ensure the test environment's PostgreSQL/Redis services and environment variables are configured:
+npx playwright install chromium
+npm run test:e2e
+To start Storybook interactively:
+npm run storybook
+For the Python service, from services/ai with its virtual environment activated:
+pytest -q
 python evaluate.py
-```
+The project also includes a Lighthouse CI configuration and GitHub Actions workflows. Their presence is not evidence that a check has passed; results must be reviewed from the corresponding run and artifacts.
+Verification snapshot
+The following results are recorded in [`docs/QA_STATUS.md`](./docs/QA_STATUS.md) for the 11 November 2026 workspace snapshot:
+- TypeScript typecheck and ESLint passed.
+- Unit tests passed: 16/16.
+- Playwright E2E tests passed: 9/9 in the recorded isolated PostgreSQL/Redis test environment.
+- Next.js production build passed.
+- FastAPI tests passed: 14/14.
+- Deterministic AI contract evaluation passed: 15/15. This verifies response/contract conditions, not editorial quality or factual accuracy.
+- Storybook production build completed with warnings.
+The following have not been verified as complete: Docker Compose smoke test, Lighthouse measurements, WCAG/accessibility audit, responsive visual review, production infrastructure validation and an AWS deployment. No Lighthouse score, Core Web Vitals result, WCAG conformance level or live production URL is claimed.
 
-AI evaluation boundaries and the human-review rubric are documented in [EVALUATION_PROTOCOL.md](./services/ai/EVALUATION_PROTOCOL.md). Current results and blocked checks are recorded in [QA_STATUS.md](./docs/QA_STATUS.md). The current evidence is not a production release certification. The expected review process is documented in [REVIEW_GUIDE.md](./docs/REVIEW_GUIDE.md), and new PRs use the [pull request template](./.github/PULL_REQUEST_TEMPLATE.md). CI now includes a PostgreSQL-backed browser suite, a Docker Compose integration smoke test, a Storybook build, AI contract checks, Lighthouse lab reports and Terraform validation; none of those remote GitHub Actions jobs is claimed as passed until the workflow runs. No coverage percentages, Lighthouse scores, Core Web Vitals measurements or accessibility conformance claims are presented as achieved because they have not yet been generated and reviewed.
+A previous GitHub Actions run showed failures in the web-quality build and Terraform validation, with dependent jobs skipped. The web workflow has been updated to install development dependencies explicitly. The Terraform validation job has been removed because this repository snapshot does not contain the referenced Terraform configuration. Push these workflow changes and review a new GitHub Actions run before treating CI as passing.
 
-## Important implementation notes
-
-- If `EDITION_USE_DB` is not `true`, the content repository uses a local JSON store with seeded content. The database path is optional and should be verified against a running PostgreSQL instance.
-- PostgreSQL and Redis are optional for local JSON demo mode. Production readiness fails when durable PostgreSQL or Redis is missing/unavailable; the configured FastAPI sidecar is also required in production. Production rate limiting fails closed when Redis is unavailable.
-- The local JSON login path authenticates the two configured demo accounts using environment variables. Database mode uses persisted scrypt password hashes. Production still needs an account lifecycle (invitation, password reset, MFA), operational bootstrap/rotation and a security review.
-- Search and taxonomy pages currently derive their vocabulary from seeded/editorial article content. Contributor profiles can be edited by editors (name, role, biography and approved portrait URL); taxonomy can rename a section within a publication or rename a shared tag across articles. Creating/deleting contributor accounts and creating/deleting empty taxonomy terms are not included.
-- The AI service's default mode is deterministic demo output, not a live LLM. Embedding retrieval and provider usage require environment configuration.
-- Demo article images reference remote Unsplash image URLs. Confirm image licensing/attribution and replace or clear all assets before a public launch.
-- `package-lock.json` is included. Use `npm ci` for reproducible installs. Performance targets are goals only; no Lighthouse scores, Core Web Vitals measurements, or production-readiness claims are made until the corresponding checks are run and reviewed.
+See [`docs/QA_STATUS.md`](./docs/QA_STATUS.md) for evidence, reproduction notes and limitations. See [`docs/REVIEW_GUIDE.md`](./docs/REVIEW_GUIDE.md) for the expected review process and [the pull request template](./.github/PULL_REQUEST_TEMPLATE.md) for proposed changes.
+Development roadmap
+EDITION is an evolving prototype. The next milestones are intended to move it closer to a production-oriented editorial platform. These are planned improvements, not features or validations claimed as complete.
+Engineering and infrastructure
+- CI reliability: Re-run the updated GitHub Actions workflow and resolve any remaining build, test or environment-specific failures.
+- Infrastructure as Code: Add and review a real Terraform configuration before reintroducing Terraform formatting, initialization and validation to CI.
+- Cloud deployment: Design and validate a deployment using managed PostgreSQL, Redis, object storage, secrets management, HTTPS and appropriate network boundaries. No AWS resources or live deployment are included in this snapshot.
+- Resilience and observability: Expand structured logging, service-level monitoring, alerting, failure-recovery tests and operational runbooks.
+- Authentication lifecycle: Add a reviewed invitation/onboarding flow, password reset, MFA, credential rotation and administrative account lifecycle.
+Performance, accessibility and responsive quality
+- Performance measurement: Run repeatable Lighthouse audits and establish baselines for LCP, INP and CLS before setting optimization targets.
+- Accessibility: Conduct automated and manual accessibility reviews, including keyboard-only use, focus management, contrast, screen-reader behaviour, zoom and reduced-motion preferences. Target WCAG 2.2 AA as a goal; no conformance claim is made yet.
+- Responsive validation: Review and test key reader and studio journeys across mobile, tablet and desktop viewports.
+- Visual regression: Add repeatable visual checks for publication pages and shared components where they provide useful coverage.
+AI quality and editorial trust
+- AI evaluation: Expand evaluation beyond response contracts to include relevance, factual fidelity, source attribution, brand voice, alt-text grounding and fairness, with documented human review.
+- Retrieval quality: Evaluate retrieval against a larger, approved editorial corpus and measure whether returned sources are genuinely relevant.
+- Privacy controls: Complete a data-processing and privacy review before enabling external model processing for unpublished editorial material.
+Content and release readiness
+- Content rights: Review and replace demo content and remote image assets as needed; verify image licences, permissions, credits and attribution before public use.
+- Release process: Document repeatable staging/production releases, database migration handling, backup/restore procedures and rollback steps.
+Known limitations and important notes
+- With EDITION_USE_DB unset or set to false, the application uses a local JSON content store. This is suitable for a local demonstration, not durable multi-instance production persistence.
+- PostgreSQL is the intended durable data store. Redis is optional for local development, but production rate limiting requires Redis; production configuration should be tested with the real service topology.
+- The local demo login uses environment-configurable credentials. Database mode uses persisted scrypt password hashes. Self-service password reset, MFA, invitation lifecycle and full operational credential-management processes are not implemented.
+- Search and taxonomy vocabulary are derived from available editorial content. Editors can update contributor profiles and rename existing sections/tags; contributor account creation/deletion and creation/deletion of empty taxonomy terms are outside the current implementation.
+- The default AI mode is deterministic demo output, not a live LLM. OpenAI generation and embedding calls are optional and gated by server configuration and per-request editor consent.
+- The AI retrieval corpus is intentionally small. Automated contract checks do not establish editorial quality, factual accuracy or suitability for publication.
+- The repository includes an S3 media adapter, but it does not include a deployable Terraform stack or provisioned AWS infrastructure. Cloud deployment remains planned.
+- Demo articles reference remote Unsplash images. Verify licences, usage permissions and credits, and replace demo assets before a public launch.
+- The project is a portfolio prototype. Complete security, privacy, accessibility, performance, operational and content-rights reviews before any production use.
+Documentation
+- [Architecture](./docs/ARCHITECTURE.md)
+- [QA status and verification evidence](./docs/QA_STATUS.md)
+- [AWS deployment roadmap](./docs/AWS_DEPLOYMENT.md)
+- [Security notes](./docs/SECURITY.md)
+- [Performance notes](./docs/PERFORMANCE.md)
+- [Content rights](./docs/CONTENT_RIGHTS.md)
+- [AI service documentation](./services/ai/README.md)
+- [AI evaluation protocol](./services/ai/EVALUATION_PROTOCOL.md)
